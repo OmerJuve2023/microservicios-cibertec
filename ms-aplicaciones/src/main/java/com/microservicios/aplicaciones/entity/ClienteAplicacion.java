@@ -42,7 +42,7 @@ public class ClienteAplicacion {
     @Column(name = "preciocontrato", precision = 10, scale = 2)
     private BigDecimal precioContrato;
 
-    @Column(name = "dominio", length = 15)
+    @Column(name = "dominio", length = 250)
     private String dominio;
 
     @Column(name = "url", length = 100)

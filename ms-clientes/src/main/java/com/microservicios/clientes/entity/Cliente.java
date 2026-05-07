@@ -22,7 +22,7 @@ public class Cliente {
     @Column(name = "idpersona")
     private Integer idPersona;
 
-    @Column(name = "razon_social", length = 25)
+    @Column(name = "razon_social", length = 250)
     private String razonSocial;
 
     @Column(name = "tipo_cliente", length = 2)

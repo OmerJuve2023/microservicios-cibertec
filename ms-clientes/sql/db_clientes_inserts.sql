@@ -16,9 +16,9 @@ USE db_clientes;
 --   3 = Luis Paredes    → representante de empresa
 -- tipoCliente: 'PN' = Persona Natural, 'PJ' = Persona Jurídica
 -- ------------------------------------------------------------
-INSERT INTO clientes (idpersona, razon_social, tipo_cliente, sector, representante_legal, estado, fecha_reg, fecha_mod) VALUES
-(1, 'Carlos Ramirez Torres',          'PN', 'Retail',      'Carlos Ramirez Torres',   'ACT', NOW(), NOW()),
-(2, 'Ana Gutierrez Lopez',            'PN', 'Educacion',   'Ana Gutierrez Lopez',     'ACT', NOW(), NOW()),
-(3, 'Tech Solutions SAC',             'PJ', 'Tecnologia',  'Luis Paredes Quispe',     'ACT', NOW(), NOW()),
-(4, 'Distribuidora Flores EIRL',      'PJ', 'Comercio',    'Maria Flores Chavez',     'ACT', NOW(), NOW()),
-(5, 'Consultora Mendoza & Asociados', 'PJ', 'Consultoria', 'Roberto Mendoza Salas',   'INA', NOW(), NOW());
+INSERT INTO clientes (idpersona, razon_social, tipo_cliente, sector, representante_legal, estado, fecha_reg, fecha_mod)
+VALUES (1, 'Carlos Ramirez Torres', 'PN', 'Retail', 'Carlos Ramirez Torres', 'ACT', NOW(), NOW()),
+       (2, 'Ana Gutierrez Lopez', 'PN', 'Educacion', 'Ana Gutierrez Lopez', 'ACT', NOW(), NOW()),
+       (3, 'Tech Solutions SAC', 'PJ', 'Tecnologia', 'Luis Paredes Quispe', 'ACT', NOW(), NOW()),
+       (4, 'Distribuidora Flores EIRL', 'PJ', 'Comercio', 'Maria Flores Chavez', 'ACT', NOW(), NOW()),
+       (5, 'Consultora Mendoza & Asociados', 'PJ', 'Consultoria', 'Roberto Mendoza Salas', 'INA', NOW(), NOW());
