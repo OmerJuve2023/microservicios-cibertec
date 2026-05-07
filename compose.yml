@@ -1,0 +1,109 @@
+services:
+
+  # ============================================================
+  # MYSQL - Base de datos para MS-Usuarios
+  # ============================================================
+  mysql-usuarios:
+    image: mysql:8.0
+    container_name: mysql-usuarios
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_usuarios
+    ports:
+      - "3307:3306"
+    volumes:
+      - vol-usuarios:/var/lib/mysql
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================
+  # MYSQL - Base de datos para MS-Clientes
+  # ============================================================
+  mysql-clientes:
+    image: mysql:8.0
+    container_name: mysql-clientes
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_clientes
+    ports:
+      - "3308:3306"
+    volumes:
+      - vol-clientes:/var/lib/mysql
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================
+  # MYSQL - Base de datos para MS-Aplicaciones
+  # ============================================================
+  mysql-aplicaciones:
+    image: mysql:8.0
+    container_name: mysql-aplicaciones
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_aplicaciones
+    ports:
+      - "3309:3306"
+    volumes:
+      - vol-aplicaciones:/var/lib/mysql
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================
+  # MYSQL - Base de datos para MS-Menus
+  # ============================================================
+  mysql-menus:
+    image: mysql:8.0
+    container_name: mysql-menus
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_menus
+    ports:
+      - "3310:3306"
+    volumes:
+      - vol-menus:/var/lib/mysql
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# ============================================================
+# VOLUMES - Persistencia de datos
+# ============================================================
+volumes:
+  vol-usuarios:
+    driver: local
+  vol-clientes:
+    driver: local
+  vol-aplicaciones:
+    driver: local
+  vol-menus:
+    driver: local
+
+# ============================================================
+# NETWORK - Red compartida entre todos los contenedores
+# ============================================================
+networks:
+  microservicios-net:
+    driver: bridge

@@ -1,0 +1,7 @@
+# Project exclude paths
+/api-gateway/target/
+/eureka-server/target/
+/ms-aplicaciones/target/
+/ms-clientes/target/
+/ms-menus/target/
+/ms-usuarios/target/

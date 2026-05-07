@@ -1,0 +1,104 @@
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    # Agrega aquí cada microservicio como una "pestaña" en Swagger
+    urls:
+      - name: MS-Usuarios
+        url: /aggregate/ms-usuarios/v3/api-docs
+      - name: MS-Clientes
+        url: /aggregate/ms-clientes/v3/api-docs
+      - name: MS-Aplicaciones
+        url: /aggregate/ms-aplicaciones/v3/api-docs
+      - name: MS-Menus
+        url: /aggregate/ms-menus/v3/api-docs
+  api-docs:
+    enabled: true
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: ms-usuarios
+          uri: lb://ms-usuarios
+          predicates:
+            - Path=/api/usuarios/**
+          filters:
+            - StripPrefix=2
+
+        - id: ms-clientes
+          uri: lb://ms-clientes
+          predicates:
+            - Path=/api/clientes/**
+          filters:
+            - StripPrefix=2
+
+        - id: ms-aplicaciones
+          uri: lb://ms-aplicaciones
+          predicates:
+            - Path=/api/aplicaciones/**
+          filters:
+            - StripPrefix=2
+
+        - id: ms-menus
+          uri: lb://ms-menus
+          predicates:
+            - Path=/api/menus/**
+          filters:
+            - StripPrefix=2
+        - id: ms-usuarios-docs
+          uri: lb://ms-usuarios
+          predicates:
+            - Path=/aggregate/ms-usuarios/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/ms-usuarios/(?<segment>.*), /$\{segment}
+
+        - id: ms-clientes-docs
+          uri: lb://ms-clientes
+          predicates:
+            - Path=/aggregate/ms-clientes/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/ms-clientes/(?<segment>.*), /$\{segment}
+
+        - id: ms-aplicaciones-docs
+          uri: lb://ms-aplicaciones
+          predicates:
+            - Path=/aggregate/ms-aplicaciones/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/ms-aplicaciones/(?<segment>.*), /$\{segment}
+
+        - id: ms-menus-docs
+          uri: lb://ms-menus
+          predicates:
+            - Path=/aggregate/ms-menus/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/ms-menus/(?<segment>.*), /$\{segment}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+# Configuracion JWT
+jwt:
+  # Cambia este secret por uno seguro en produccion (min 32 caracteres)
+  secret: clave-super-secreta-para-jwt-microservicios-2024
+  # Expiracion en ms: 86400000 = 24 horas
+  expiration: 86400000
+
+# URL directa a MS-Usuarios para validar credenciales en el login
+# Usa lb:// para balanceo via Eureka
+services:
+  ms-usuarios:
+    url: http://ms-usuarios
