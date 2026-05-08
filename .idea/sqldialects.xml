@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/ms-aplicaciones/sql/db_aplicaciones_inserts.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/ms-clientes/sql/db_clientes_inserts.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/ms-menus/sql/db_menus_inserts.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/ms-usuarios/sql/db_usuarios_inserts.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/ms-aplicaciones/sql/db_aplicaciones_inserts.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/ms-clientes/sql/db_clientes_inserts.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/ms-menus/sql/db_menus_inserts.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/ms-usuarios/sql/db_usuarios_inserts.sql" dialect="MySQL" />
   </component>
 </project>

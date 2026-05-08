@@ -4,26 +4,93 @@
 
 ---
 
-## 📡 URL Base
+## 🚀 Cómo Levantar el Proyecto
 
-```
-http://localhost:8080
-```
+### Prerrequisitos
+- JDK 17+
+- Maven 3.8+
+- Docker Desktop (para MySQL)
+- Docker Compose
 
-> En producción reemplazar por la URL del servidor.
+### 1. Levantar MySQL (Docker)
+```bash
+cd microservicios
+docker-compose up -d
+```
+Esto crea 4 bases de datos MySQL en los puertos:
+- 3307 → db_usuarios
+- 3308 → db_clientes
+- 3309 → db_aplicaciones
+- 3310 → db_menus
+
+### 2. Levantar servicios (orden recomendado)
+
+| # | Servicio | Puerto | Comando |
+|---|----------|--------|---------|
+| 1 | Eureka Server | 8761 | `mvn spring-boot:run` (en eureka-server) |
+| 2 | API Gateway | 8080 | `mvn spring-boot:run` (en api-gateway) |
+| 3 | MS-Usuarios | 8081 | `mvn spring-boot:run` (en ms-usuarios) |
+| 4 | MS-Clientes | 8082 | `mvn spring-boot:run` (en ms-clientes) |
+| 5 | MS-Aplicaciones | 8083 | `mvn spring-boot:run` (en ms-aplicaciones) |
+| 6 | MS-Menus | 8084 | `mvn spring-boot:run` (en ms-menus) |
+
+**URL Base:** `http://localhost:8080`
 
 ---
 
 ## 🔐 Autenticación JWT
 
-### Flujo de login
+### Usuarios de prueba (auto-creados al iniciar ms-usuarios)
 
+| Usuario | Password | Estado |
+|---------|----------|--------|
+| admin | admin123 | ACTIVO |
+| jefa | user123 | ACTIVO |
+| lparedes | pass123 | ACTIVO |
+| mflores | pass123 | ACTIVO |
+| rmendoza | pass123 | INACTIVO |
+
+### Flujo de login
 ```
 1. POST /auth/login  →  recibe JWT token
 2. Guardar token en localStorage o sessionStorage
 3. Enviar token en CADA petición como header:
    Authorization: Bearer <token>
 ```
+
+### Ejemplo de login
+```bash
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"nombreUsuario": "admin", "password": "admin123"}'
+```
+
+Response:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "tipo": "Bearer",
+  "nombreUsuario": "admin",
+  "mensaje": "Login exitoso"
+}
+```
+
+---
+
+## 📚 Documentación API (Swagger)
+
+### SwaggerUI del Gateway (Todos los servicios)
+```
+http://localhost:8080/swagger-ui.html
+```
+
+### SwaggerUI por servicio individual
+| Servicio | URL |
+|----------|-----|
+| MS-Usuarios | http://localhost:8081/swagger-ui.html |
+| MS-Clientes | http://localhost:8082/swagger-ui.html |
+| MS-Aplicaciones | http://localhost:8083/swagger-ui.html |
+| MS-Menus | http://localhost:8084/swagger-ui.html |
 
 ---
 
@@ -183,14 +250,14 @@ export interface ClienteAplicacion {
 ```typescript
 export interface Menu {
   idMenu: string;           // String ID, ej: 'MNU001'
-  idAplicacion: string;     // FK hacia Aplicacion
+  idAplicacion: string;    // FK hacia Aplicacion
   nombre: string;
-  nivelMenu: string;        // '1' = principal, '2' = submenu
-  idMenuPadre?: string;     // null si es menú raíz
+  nivelMenu: string;       // '1' = principal, '2' = submenu
+  idMenuPadre?: string;    // null si es menú raíz
   orden?: number;
-  icono?: string;           // nombre del icono, ej: 'home', 'settings'
+  icono?: string;          // nombre del icono, ej: 'home', 'settings'
   nivelOrden?: number;
-  ruta?: string;            // ruta Angular, ej: '/dashboard'
+  ruta?: string;          // ruta Angular, ej: '/dashboard'
   fechaReg?: string;
   fechaMod?: string;
 }
@@ -320,23 +387,6 @@ export class AuthGuard implements CanActivate {
 |--------|----------|------|------|-------------|
 | POST | `/auth/login` | ❌ | `LoginRequest` | Obtener token JWT |
 | GET | `/auth/validate?token=...` | ❌ | — | Verificar si un token es válido |
-
-**Ejemplo login:**
-```typescript
-// Body
-{ "nombreUsuario": "admin", "password": "123456" }
-
-// Response 200
-{
-  "token": "eyJhbGciOiJIUzI1NiJ9...",
-  "tipo": "Bearer",
-  "nombreUsuario": "admin",
-  "mensaje": "Login exitoso"
-}
-
-// Response 401
-{ "mensaje": "Credenciales incorrectas", "status": 401 }
-```
 
 ---
 

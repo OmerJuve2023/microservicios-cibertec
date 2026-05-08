@@ -23,7 +23,6 @@ public class JwtAuthenticationFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
 
-        // Rutas públicas: no requieren token
         if (path.startsWith("/auth/")) {
             return chain.filter(exchange);
         }

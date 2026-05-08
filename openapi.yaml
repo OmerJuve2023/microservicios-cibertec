@@ -1,0 +1,1473 @@
+openapi: 3.0.3
+info:
+  title: API Microservicios
+  description: Documentación completa de todos los endpoints de la arquitectura de microservicios
+  version: 1.0.0
+  contact:
+    name: Equipo Backend
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor local (API Gateway)
+  - url: http://localhost:8081
+    description: MS-Usuarios
+  - url: http://localhost:8082
+    description: MS-Clientes
+  - url: http://localhost:8083
+    description: MS-Aplicaciones
+  - url: http://localhost:8084
+    description: MS-Menus
+
+tags:
+  - name: Autenticación
+    description: Endpoints de login y validación de tokens
+  - name: Personas
+    description: Gestión de personas (MS-Usuarios)
+  - name: Usuarios
+    description: Gestión de usuarios del sistema (MS-Usuarios)
+  - name: AccesosMenus
+    description: Asignación de menús a usuarios (MS-Usuarios)
+  - name: Clientes
+    description: Gestión de clientes (MS-Clientes)
+  - name: Aplicaciones
+    description: Gestión de aplicaciones (MS-Aplicaciones)
+  - name: ClienteAplicacion
+    description: Contratos entre clientes y aplicaciones (MS-Aplicaciones)
+  - name: Menus
+    description: Gestión de menús (MS-Menus)
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Autenticación
+      summary: Iniciar sesión y obtener token JWT
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Credenciales incorrectas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Servicio no disponible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/validate:
+    get:
+      tags:
+        - Autenticación
+      summary: Validar un token JWT
+      operationId: validateToken
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token válido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Token inválido o expirado
+
+  # ============================================================
+  # MS-USUARIOS - Personas
+  # ============================================================
+  /api/usuarios/personas:
+    get:
+      tags:
+        - Personas
+      summary: Listar todas las personas
+      operationId: getAllPersonas
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de personas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Persona'
+    post:
+      tags:
+        - Personas
+      summary: Crear una nueva persona
+      operationId: createPersona
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonaInput'
+      responses:
+        '201':
+          description: Persona creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persona'
+
+  /api/usuarios/personas/{id}:
+    get:
+      tags:
+        - Personas
+      summary: Obtener persona por ID
+      operationId: getPersonaById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Persona encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persona'
+        '404':
+          description: Persona no encontrada
+    put:
+      tags:
+        - Personas
+      summary: Actualizar persona
+      operationId: updatePersona
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonaInput'
+      responses:
+        '200':
+          description: Persona actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persona'
+        '404':
+          description: Persona no encontrada
+    delete:
+      tags:
+        - Personas
+      summary: Eliminar persona
+      operationId: deletePersona
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Persona eliminada
+        '404':
+          description: Persona no encontrada
+
+  # ============================================================
+  # MS-USUARIOS - Usuarios
+  # ============================================================
+  /api/usuarios/usuarios:
+    get:
+      tags:
+        - Usuarios
+      summary: Listar todos los usuarios
+      operationId: getAllUsuarios
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+    post:
+      tags:
+        - Usuarios
+      summary: Crear nuevo usuario
+      operationId: createUsuario
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioInput'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+
+  /api/usuarios/usuarios/{id}:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtener usuario por ID
+      operationId: getUsuarioById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuario no encontrado
+    put:
+      tags:
+        - Usuarios
+      summary: Actualizar usuario
+      operationId: updateUsuario
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioInput'
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuario no encontrado
+    delete:
+      tags:
+        - Usuarios
+      summary: Eliminar usuario
+      operationId: deleteUsuario
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Usuario eliminado
+        '404':
+          description: Usuario no encontrado
+
+  # ============================================================
+  # MS-USUARIOS - Accesos a Menús
+  # ============================================================
+  /api/usuarios/accesos-menus:
+    get:
+      tags:
+        - AccesosMenus
+      summary: Listar todos los accesos a menús
+      operationId: getAllAccesosMenus
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de accesos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccesoMenu'
+    post:
+      tags:
+        - AccesosMenus
+      summary: Asignar menú a usuario
+      operationId: createAccesoMenu
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccesoMenuInput'
+      responses:
+        '201':
+          description: Acceso creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccesoMenu'
+
+  /api/usuarios/accesos-menus/{id}:
+    get:
+      tags:
+        - AccesosMenus
+      summary: Obtener acceso por ID
+      operationId: getAccesoMenuById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Acceso encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccesoMenu'
+        '404':
+          description: Acceso no encontrado
+    delete:
+      tags:
+        - AccesosMenus
+      summary: Eliminar acceso a menú
+      operationId: deleteAccesoMenu
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Acceso eliminado
+        '404':
+          description: Acceso no encontrado
+
+  /api/usuarios/accesos-menus/usuario/{idUsuario}:
+    get:
+      tags:
+        - AccesosMenus
+      summary: Obtener accesos de un usuario específico
+      operationId: getAccesosByUsuario
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idUsuario
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Lista de accesos del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccesoMenu'
+
+  # ============================================================
+  # MS-CLIENTES - Clientes
+  # ============================================================
+  /api/clientes/clientes:
+    get:
+      tags:
+        - Clientes
+      summary: Listar todos los clientes
+      operationId: getAllClientes
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cliente'
+    post:
+      tags:
+        - Clientes
+      summary: Crear nuevo cliente
+      operationId: createCliente
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+      responses:
+        '201':
+          description: Cliente creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+
+  /api/clientes/clientes/{id}:
+    get:
+      tags:
+        - Clientes
+      summary: Obtener cliente por ID
+      operationId: getClienteById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '404':
+          description: Cliente no encontrado
+    put:
+      tags:
+        - Clientes
+      summary: Actualizar cliente
+      operationId: updateCliente
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteInput'
+      responses:
+        '200':
+          description: Cliente actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+        '404':
+          description: Cliente no encontrado
+    delete:
+      tags:
+        - Clientes
+      summary: Eliminar cliente
+      operationId: deleteCliente
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Cliente eliminado
+        '404':
+          description: Cliente no encontrado
+
+  # ============================================================
+  # MS-APLICACIONES - Aplicaciones
+  # ============================================================
+  /api/aplicaciones/aplicaciones:
+    get:
+      tags:
+        - Aplicaciones
+      summary: Listar todas las aplicaciones
+      operationId: getAllAplicaciones
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de aplicaciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Aplicacion'
+    post:
+      tags:
+        - Aplicaciones
+      summary: Crear nueva aplicación
+      operationId: createAplicacion
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AplicacionInput'
+      responses:
+        '201':
+          description: Aplicación creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aplicacion'
+
+  /api/aplicaciones/aplicaciones/{id}:
+    get:
+      tags:
+        - Aplicaciones
+      summary: Obtener aplicación por ID
+      operationId: getAplicacionById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Aplicación encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aplicacion'
+        '404':
+          description: Aplicación no encontrada
+    put:
+      tags:
+        - Aplicaciones
+      summary: Actualizar aplicación
+      operationId: updateAplicacion
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AplicacionInput'
+      responses:
+        '200':
+          description: Aplicación actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aplicacion'
+        '404':
+          description: Aplicación no encontrada
+    delete:
+      tags:
+        - Aplicaciones
+      summary: Eliminar aplicación
+      operationId: deleteAplicacion
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Aplicación eliminada
+        '404':
+          description: Aplicación no encontrada
+
+  # ============================================================
+  # MS-APLICACIONES - ClienteAplicacion
+  # ============================================================
+  /api/aplicaciones/cliente-aplicacion:
+    get:
+      tags:
+        - ClienteAplicacion
+      summary: Listar todos los contratos
+      operationId: getAllClienteAplicacion
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de contratos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteAplicacion'
+    post:
+      tags:
+        - ClienteAplicacion
+      summary: Crear nuevo contrato
+      operationId: createClienteAplicacion
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteAplicacionInput'
+      responses:
+        '201':
+          description: Contrato creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteAplicacion'
+
+  /api/aplicaciones/cliente-aplicacion/{id}:
+    get:
+      tags:
+        - ClienteAplicacion
+      summary: Obtener contrato por ID
+      operationId: getClienteAplicacionById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Contrato encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteAplicacion'
+        '404':
+          description: Contrato no encontrado
+    put:
+      tags:
+        - ClienteAplicacion
+      summary: Actualizar contrato
+      operationId: updateClienteAplicacion
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteAplicacionInput'
+      responses:
+        '200':
+          description: Contrato actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteAplicacion'
+        '404':
+          description: Contrato no encontrado
+    delete:
+      tags:
+        - ClienteAplicacion
+      summary: Eliminar contrato
+      operationId: deleteClienteAplicacion
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Contrato eliminado
+        '404':
+          description: Contrato no encontrado
+
+  /api/aplicaciones/cliente-aplicacion/cliente/{idCliente}:
+    get:
+      tags:
+        - ClienteAplicacion
+      summary: Obtener contratos de un cliente
+      operationId: getClienteAplicacionByCliente
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idCliente
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Lista de contratos del cliente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteAplicacion'
+
+  /api/aplicaciones/cliente-aplicacion/aplicacion/{idAplicacion}:
+    get:
+      tags:
+        - ClienteAplicacion
+      summary: Obtener contratos de una aplicación
+      operationId: getClienteAplicacionByAplicacion
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idAplicacion
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de contratos de la aplicación
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteAplicacion'
+
+  # ============================================================
+  # MS-MENUS - Menus
+  # ============================================================
+  /api/menus/menus:
+    get:
+      tags:
+        - Menus
+      summary: Listar todos los menús
+      operationId: getAllMenus
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de menús
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Menu'
+    post:
+      tags:
+        - Menus
+      summary: Crear nuevo menú
+      operationId: createMenu
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuInput'
+      responses:
+        '201':
+          description: Menú creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+
+  /api/menus/menus/{id}:
+    get:
+      tags:
+        - Menus
+      summary: Obtener menú por ID
+      operationId: getMenuById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Menú encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+        '404':
+          description: Menú no encontrado
+    put:
+      tags:
+        - Menus
+      summary: Actualizar menú
+      operationId: updateMenu
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuInput'
+      responses:
+        '200':
+          description: Menú actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+        '404':
+          description: Menú no encontrado
+    delete:
+      tags:
+        - Menus
+      summary: Eliminar menú
+      operationId: deleteMenu
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Menú eliminado
+        '404':
+          description: Menú no encontrado
+
+  /api/menus/menus/aplicacion/{idAplicacion}:
+    get:
+      tags:
+        - Menus
+      summary: Obtener menús de una aplicación
+      operationId: getMenusByAplicacion
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idAplicacion
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de menús de la aplicación
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Menu'
+
+  /api/menus/menus/padre/{idMenuPadre}:
+    get:
+      tags:
+        - Menus
+      summary: Obtener submenús de un menú padre
+      operationId: getMenusByPadre
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: idMenuPadre
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de submenús
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Menu'
+
+  /api/menus/menus/nivel/{nivelMenu}:
+    get:
+      tags:
+        - Menus
+      summary: Obtener menús por nivel
+      operationId: getMenusByNivel
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: nivelMenu
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [1, 2]
+      responses:
+        '200':
+          description: Lista de menús del nivel especificado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Menu'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ============================================================
+    # Autenticación
+    # ============================================================
+    LoginRequest:
+      type: object
+      required:
+        - nombreUsuario
+        - password
+      properties:
+        nombreUsuario:
+          type: string
+          example: admin
+        password:
+          type: string
+          example: admin123
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiJ9...
+        tipo:
+          type: string
+          example: Bearer
+        nombreUsuario:
+          type: string
+          example: admin
+        mensaje:
+          type: string
+          example: Login exitoso
+
+    ErrorResponse:
+      type: object
+      properties:
+        mensaje:
+          type: string
+        status:
+          type: integer
+          format: int32
+
+    # ============================================================
+    # Personas
+    # ============================================================
+    Persona:
+      type: object
+      properties:
+        idPersona:
+          type: integer
+          format: int32
+          example: 1
+        nombre:
+          type: string
+          example: Carlos
+        apellido:
+          type: string
+          example: Ramirez Torres
+        email:
+          type: string
+          example: carlos.ramirez@email.com
+        telefono:
+          type: string
+          example: 987654321
+        tipoDocumento:
+          type: string
+          example: D
+        docIdentidad:
+          type: string
+          example: 45678901
+        direccion:
+          type: string
+          example: Av. Lima 123
+        distrito:
+          type: string
+          example: Miraflores
+        provincia:
+          type: string
+          example: Lima
+        departamento:
+          type: string
+          example: Lima
+        fechaReg:
+          type: string
+          format: date-time
+        fechaMod:
+          type: string
+          format: date-time
+
+    PersonaInput:
+      type: object
+      required:
+        - nombre
+        - apellido
+        - email
+      properties:
+        nombre:
+          type: string
+        apellido:
+          type: string
+        email:
+          type: string
+        telefono:
+          type: string
+        tipoDocumento:
+          type: string
+        docIdentidad:
+          type: string
+        direccion:
+          type: string
+        distrito:
+          type: string
+        provincia:
+          type: string
+        departamento:
+          type: string
+
+    # ============================================================
+    # Usuarios
+    # ============================================================
+    Usuario:
+      type: object
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+          example: 1
+        idPersona:
+          type: integer
+          format: int32
+          example: 1
+        estado:
+          type: string
+          example: ACT
+        nombreUsuario:
+          type: string
+          example: admin
+        password:
+          type: string
+        fechaReg:
+          type: string
+          format: date-time
+        fechaMod:
+          type: string
+          format: date-time
+
+    UsuarioInput:
+      type: object
+      required:
+        - idPersona
+        - estado
+        - nombreUsuario
+        - password
+      properties:
+        idPersona:
+          type: integer
+          format: int32
+        estado:
+          type: string
+          enum: [ACT, INA]
+        nombreUsuario:
+          type: string
+        password:
+          type: string
+
+    # ============================================================
+    # Accesos a Menús
+    # ============================================================
+    AccesoMenu:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        idUsuario:
+          type: integer
+          format: int32
+          example: 1
+        idMenu:
+          type: string
+          example: MNU001
+        estado:
+          type: string
+          example: ACT
+        fechaReg:
+          type: string
+          format: date-time
+        fechaMod:
+          type: string
+          format: date-time
+
+    AccesoMenuInput:
+      type: object
+      required:
+        - idUsuario
+        - idMenu
+        - estado
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+        idMenu:
+          type: string
+        estado:
+          type: string
+          enum: [ACT, INA]
+
+    # ============================================================
+    # Clientes
+    # ============================================================
+    Cliente:
+      type: object
+      properties:
+        idCliente:
+          type: integer
+          format: int32
+          example: 1
+        idPersona:
+          type: integer
+          format: int32
+          example: 1
+        razonSocial:
+          type: string
+          example: Empresa SAC
+        tipoCliente:
+          type: string
+          example: PJ
+        sector:
+          type: string
+          example: Tecnología
+        representanteLegal:
+          type: string
+          example: Juan Perez
+        estado:
+          type: string
+          example: ACT
+        fechaReg:
+          type: string
+          format: date-time
+        fechaMod:
+          type: string
+          format: date-time
+
+    ClienteInput:
+      type: object
+      required:
+        - idPersona
+        - razonSocial
+        - tipoCliente
+        - estado
+      properties:
+        idPersona:
+          type: integer
+          format: int32
+        razonSocial:
+          type: string
+        tipoCliente:
+          type: string
+          enum: [PN, PJ]
+        sector:
+          type: string
+        representanteLegal:
+          type: string
+        estado:
+          type: string
+          enum: [ACT, INA]
+
+    # ============================================================
+    # Aplicaciones
+    # ============================================================
+    Aplicacion:
+      type: object
+      properties:
+        idAplicacion:
+          type: string
+          example: APP001
+        nombre:
+          type: string
+          example: Sistema de Gestión
+        estado:
+          type: string
+          example: ACT
+        fechaReg:
+          type: string
+          format: date-time
+        fechaMod:
+          type: string
+          format: date-time
+
+    AplicacionInput:
+      type: object
+      required:
+        - idAplicacion
+        - nombre
+        - estado
+      properties:
+        idAplicacion:
+          type: string
+        nombre:
+          type: string
+        estado:
+          type: string
+          enum: [ACT, INA]
+
+    # ============================================================
+    # Cliente-Aplicación (Contratos)
+    # ============================================================
+    ClienteAplicacion:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        idCliente:
+          type: integer
+          format: int32
+          example: 1
+        idAplicacion:
+          type: string
+          example: APP001
+        periodoUso:
+          type: string
+          example: M
+        fechaIni:
+          type: string
+          format: date
+          example: 2024-01-01
+        fechaFin:
+          type: string
+          format: date
+          example: 2024-12-31
+        estado:
+          type: string
+          example: ACT
+        precioContrato:
+          type: number
+          example: 1500.00
+        dominio:
+          type: string
+          example: miempresa.com
+        url:
+          type: string
+          example: https://miempresa.com
+        fechaReg:
+          type: string
+          format: date-time
+        fechaMod:
+          type: string
+          format: date-time
+
+    ClienteAplicacionInput:
+      type: object
+      required:
+        - idCliente
+        - idAplicacion
+        - periodoUso
+        - fechaIni
+        - fechaFin
+        - estado
+        - precioContrato
+      properties:
+        idCliente:
+          type: integer
+          format: int32
+        idAplicacion:
+          type: string
+        periodoUso:
+          type: string
+          enum: [M, A]
+        fechaIni:
+          type: string
+          format: date
+        fechaFin:
+          type: string
+          format: date
+        estado:
+          type: string
+          enum: [ACT, INA]
+        precioContrato:
+          type: number
+        dominio:
+          type: string
+        url:
+          type: string
+
+    # ============================================================
+    # Menús
+    # ============================================================
+    Menu:
+      type: object
+      properties:
+        idMenu:
+          type: string
+          example: MNU001
+        idAplicacion:
+          type: string
+          example: APP001
+        nombre:
+          type: string
+          example: Dashboard
+        nivelMenu:
+          type: string
+          example: 1
+        idMenuPadre:
+          type: string
+          nullable: true
+        orden:
+          type: integer
+          format: int32
+          example: 1
+        icono:
+          type: string
+          example: home
+        nivelOrden:
+          type: integer
+          format: int32
+          example: 1
+        ruta:
+          type: string
+          example: /dashboard
+        fechaReg:
+          type: string
+          format: date-time
+        fechaMod:
+          type: string
+          format: date-time
+
+    MenuInput:
+      type: object
+      required:
+        - idMenu
+        - idAplicacion
+        - nombre
+        - nivelMenu
+        - estado
+      properties:
+        idMenu:
+          type: string
+        idAplicacion:
+          type: string
+        nombre:
+          type: string
+        nivelMenu:
+          type: string
+          enum: [1, 2]
+        idMenuPadre:
+          type: string
+          nullable: true
+        orden:
+          type: integer
+          format: int32
+        icono:
+          type: string
+        nivelOrden:
+          type: integer
+          format: int32
+        ruta:
+          type: string
+        estado:
+          type: string
+          enum: [ACT, INA]

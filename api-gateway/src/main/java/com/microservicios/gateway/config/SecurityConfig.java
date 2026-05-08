@@ -23,21 +23,22 @@ public class SecurityConfig {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        // Login público, sin token
                         .pathMatchers("/auth/login").permitAll()
                         .pathMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/aggregate/**",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/docs-usuarios/**",
+                                "/docs-clientes/**",
+                                "/docs-aplicaciones/**",
+                                "/docs-menus/**"
                         ).permitAll()
                         .anyExchange().authenticated()
                 )
-                // Deshabilitamos httpBasic, ahora usamos JWT
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                // Registramos nuestro filtro JWT antes del filtro de autenticación
                 .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION);
 
         return http.build();

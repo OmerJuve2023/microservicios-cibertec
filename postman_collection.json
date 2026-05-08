@@ -1,0 +1,679 @@
+{
+  "info": {
+    "name": "API Microservicios",
+    "description": "Colección de endpoints para arquitectura de microservicios con JWT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "microservicios-api-2024"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "01. Autenticación",
+      "item": [
+        {
+          "name": "POST Login",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreUsuario\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET Validar Token",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/auth/validate?token={{token}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "validate"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{token}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Personas (MS-Usuarios)",
+      "item": [
+        {
+          "name": "GET Listar todas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/personas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "personas"]
+            }
+          }
+        },
+        {
+          "name": "GET Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/personas/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "personas", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST Crear",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/personas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "personas"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Nuevo\",\n  \"apellido\": \"Usuario\",\n  \"email\": \"nuevo@email.com\",\n  \"telefono\": \"999999999\",\n  \"tipoDocumento\": \"D\",\n  \"docIdentidad\": \"12345678\",\n  \"direccion\": \"Calle Nueva 123\",\n  \"distrito\": \"Lima\",\n  \"provincia\": \"Lima\",\n  \"departamento\": \"Lima\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT Actualizar",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/personas/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "personas", "1"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carlos Actualizado\",\n  \"apellido\": \"Ramirez\",\n  \"email\": \"carlos.actualizado@email.com\",\n  \"telefono\": \"987654321\",\n  \"tipoDocumento\": \"D\",\n  \"docIdentidad\": \"45678901\",\n  \"direccion\": \"Av. Lima 123\",\n  \"distrito\": \"Miraflores\",\n  \"provincia\": \"Lima\",\n  \"departamento\": \"Lima\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/personas/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "personas", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Usuarios (MS-Usuarios)",
+      "item": [
+        {
+          "name": "GET Listar todos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/usuarios",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "usuarios"]
+            }
+          }
+        },
+        {
+          "name": "GET Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "usuarios", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST Crear",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/usuarios",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "usuarios"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": 1,\n  \"estado\": \"ACT\",\n  \"nombreUsuario\": \"nuevouser\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT Actualizar",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "usuarios", "1"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": 1,\n  \"estado\": \"ACT\",\n  \"nombreUsuario\": \"admin\",\n  \"password\": \"nuevopass123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "usuarios", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. Accesos a Menús (MS-Usuarios)",
+      "item": [
+        {
+          "name": "GET Listar todos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/accesos-menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "accesos-menus"]
+            }
+          }
+        },
+        {
+          "name": "GET Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/accesos-menus/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "accesos-menus", "1"]
+            }
+          }
+        },
+        {
+          "name": "GET Por Usuario",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/accesos-menus/usuario/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "accesos-menus", "usuario", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST Crear",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/accesos-menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "accesos-menus"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 1,\n  \"idMenu\": \"MNU001\",\n  \"estado\": \"ACT\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/accesos-menus/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "accesos-menus", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. Clientes (MS-Clientes)",
+      "item": [
+        {
+          "name": "GET Listar todos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/clientes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "GET Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/clientes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST Crear",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/clientes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "clientes"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": 1,\n  \"razonSocial\": \"Empresa Nueva SAC\",\n  \"tipoCliente\": \"PJ\",\n  \"sector\": \"Tecnología\",\n  \"representanteLegal\": \"Juan Perez\",\n  \"estado\": \"ACT\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT Actualizar",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/clientes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "clientes", "1"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": 1,\n  \"razonSocial\": \"Empresa Actualizada SAC\",\n  \"tipoCliente\": \"PJ\",\n  \"sector\": \"Tecnología\",\n  \"representanteLegal\": \"Juan Perez\",\n  \"estado\": \"ACT\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/clientes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "clientes", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. Aplicaciones (MS-Aplicaciones)",
+      "item": [
+        {
+          "name": "GET Listar todas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/aplicaciones",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "aplicaciones"]
+            }
+          }
+        },
+        {
+          "name": "GET Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/aplicaciones/APP001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "aplicaciones", "APP001"]
+            }
+          }
+        },
+        {
+          "name": "POST Crear",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/aplicaciones",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "aplicaciones"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idAplicacion\": \"APP099\",\n  \"nombre\": \"Nueva Aplicación\",\n  \"estado\": \"ACT\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT Actualizar",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/aplicaciones/APP001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "aplicaciones", "APP001"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idAplicacion\": \"APP001\",\n  \"nombre\": \"Sistema de Gestión Actualizado\",\n  \"estado\": \"ACT\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/aplicaciones/APP001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "aplicaciones", "APP001"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. Cliente-Aplicación (MS-Aplicaciones)",
+      "item": [
+        {
+          "name": "GET Listar todos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/cliente-aplicacion",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "cliente-aplicacion"]
+            }
+          }
+        },
+        {
+          "name": "GET Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/cliente-aplicacion/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "cliente-aplicacion", "1"]
+            }
+          }
+        },
+        {
+          "name": "GET Por Cliente",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/cliente-aplicacion/cliente/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "cliente-aplicacion", "cliente", "1"]
+            }
+          }
+        },
+        {
+          "name": "GET Por Aplicación",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/cliente-aplicacion/aplicacion/APP001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "cliente-aplicacion", "aplicacion", "APP001"]
+            }
+          }
+        },
+        {
+          "name": "POST Crear",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/cliente-aplicacion",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "cliente-aplicacion"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1,\n  \"idAplicacion\": \"APP001\",\n  \"periodoUso\": \"M\",\n  \"fechaIni\": \"2024-01-01\",\n  \"fechaFin\": \"2024-12-31\",\n  \"estado\": \"ACT\",\n  \"precioContrato\": 1500.00,\n  \"dominio\": \"miempresa.com\",\n  \"url\": \"https://miempresa.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT Actualizar",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/cliente-aplicacion/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "cliente-aplicacion", "1"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": 1,\n  \"idAplicacion\": \"APP001\",\n  \"periodoUso\": \"A\",\n  \"fechaIni\": \"2024-01-01\",\n  \"fechaFin\": \"2025-12-31\",\n  \"estado\": \"ACT\",\n  \"precioContrato\": 15000.00,\n  \"dominio\": \"miempresa.com\",\n  \"url\": \"https://miempresa.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/aplicaciones/cliente-aplicacion/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aplicaciones", "cliente-aplicacion", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "08. Menús (MS-Menus)",
+      "item": [
+        {
+          "name": "GET Listar todos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "menus"]
+            }
+          }
+        },
+        {
+          "name": "GET Obtener por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/menus/MNU001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "menus", "MNU001"]
+            }
+          }
+        },
+        {
+          "name": "GET Por Aplicación",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/menus/aplicacion/APP001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "menus", "aplicacion", "APP001"]
+            }
+          }
+        },
+        {
+          "name": "GET Por Menú Padre",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/menus/padre/MNU001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "menus", "padre", "MNU001"]
+            }
+          }
+        },
+        {
+          "name": "GET Por Nivel",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/menus/nivel/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "menus", "nivel", "1"]
+            }
+          }
+        },
+        {
+          "name": "POST Crear",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "menus"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idMenu\": \"MNU099\",\n  \"idAplicacion\": \"APP001\",\n  \"nombre\": \"Nuevo Menú\",\n  \"nivelMenu\": \"1\",\n  \"orden\": 10,\n  \"icono\": \"star\",\n  \"nivelOrden\": 1,\n  \"ruta\": \"/nuevo\",\n  \"estado\": \"ACT\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT Actualizar",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/menus/MNU001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "menus", "MNU001"]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idMenu\": \"MNU001\",\n  \"idAplicacion\": \"APP001\",\n  \"nombre\": \"Dashboard Actualizado\",\n  \"nivelMenu\": \"1\",\n  \"orden\": 1,\n  \"icono\": \"home\",\n  \"nivelOrden\": 1,\n  \"ruta\": \"/dashboard\",\n  \"estado\": \"ACT\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE Eliminar",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/menus/menus/MNU001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "menus", "menus", "MNU001"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
