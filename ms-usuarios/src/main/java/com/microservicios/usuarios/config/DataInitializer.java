@@ -48,12 +48,13 @@ public class DataInitializer implements CommandLineRunner {
         // USUARIOS
         // ============================================================
         // Passwords hasheados: admin123, user123, pass123
+        // Roles: ADMIN (admin), USUARIO (los demas)
         List<Usuario> usuarios = Arrays.asList(
-            crearUsuario(p1.getIdPersona(), "ACT", "admin", "admin123"),
-            crearUsuario(p2.getIdPersona(), "ACT", "jefa", "user123"),
-            crearUsuario(p3.getIdPersona(), "ACT", "lparedes", "pass123"),
-            crearUsuario(p4.getIdPersona(), "ACT", "mflores", "pass123"),
-            crearUsuario(p5.getIdPersona(), "INA", "rmendoza", "pass123")
+            crearUsuario(p1.getIdPersona(), "ACT", "admin", "admin123", "ADMIN"),
+            crearUsuario(p2.getIdPersona(), "ACT", "jefa", "user123", "USUARIO"),
+            crearUsuario(p3.getIdPersona(), "ACT", "lparedes", "pass123", "USUARIO"),
+            crearUsuario(p4.getIdPersona(), "ACT", "mflores", "pass123", "USUARIO"),
+            crearUsuario(p5.getIdPersona(), "INA", "rmendoza", "pass123", "USUARIO")
         );
         usuarios = usuarioRepository.saveAll(usuarios);
         log.info("Usuarios creados: {}", usuarios.size());
@@ -79,11 +80,11 @@ public class DataInitializer implements CommandLineRunner {
         log.info("DATOS DE PRUEBA INICIALIZADOS CORRECTAMENTE");
         log.info("============================================================");
         log.info("USUARIOS DISPONIBLES:");
-        log.info("  - admin / admin123 (ADMINISTRADOR)");
-        log.info("  - jefa / user123");
-        log.info("  - lparedes / pass123");
-        log.info("  - mflores / pass123");
-        log.info("  - rmendoza / pass123 (INACTIVO)");
+        log.info("  - admin / admin123 (ADMIN)");
+        log.info("  - jefa / user123 (USUARIO)");
+        log.info("  - lparedes / pass123 (USUARIO)");
+        log.info("  - mflores / pass123 (USUARIO)");
+        log.info("  - rmendoza / pass123 (USUARIO - INACTIVO)");
         log.info("============================================================");
     }
 
@@ -104,12 +105,13 @@ public class DataInitializer implements CommandLineRunner {
         return p;
     }
 
-    private Usuario crearUsuario(Integer idPersona, String estado, String nombreUsuario, String password) {
+    private Usuario crearUsuario(Integer idPersona, String estado, String nombreUsuario, String password, String rol) {
         Usuario u = new Usuario();
         u.setIdPersona(idPersona);
         u.setEstado(estado);
         u.setNombreUsuario(nombreUsuario);
         u.setPassword(passwordEncoder.encode(password));
+        u.setRol(rol);
         return u;
     }
 

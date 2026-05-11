@@ -4,6 +4,7 @@ import com.microservicios.gateway.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -27,9 +28,9 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ← CORRECTO
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ← ESTE ES EL CAMBIO
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/auth/login").permitAll()
+                        .pathMatchers("/auth/**").permitAll()
                         .pathMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
@@ -41,6 +42,10 @@ public class SecurityConfig {
                                 "/docs-aplicaciones/**",
                                 "/docs-menus/**"
                         ).permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/**").hasAnyRole("USUARIO", "ADMIN")
+                        .pathMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
@@ -54,8 +59,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "http://localhost:4200",   // Angular
-                "http://localhost:3000"    // React/otro
+                "http://localhost:4200",
+                "http://localhost:3000"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));

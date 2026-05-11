@@ -38,18 +38,14 @@ public class UsuarioClient {
                 });
     }
 
-    /**
-     * Valida las credenciales contra MS-Usuarios.
-     * Retorna el nombreUsuario si las credenciales son válidas, vacío si no.
-     */
-    public Mono<String> validarCredenciales(AuthDto.LoginRequest loginRequest) {
+    public Mono<Map> validarCredenciales(AuthDto.LoginRequest loginRequest) {
         return findByNombreUsuario(loginRequest.getNombreUsuario())
                 .flatMap(usuario -> {
                     String passwordBD = (String) usuario.get("password");
                     String nombreUsuario = (String) usuario.get("nombreUsuario");
 
                     if (passwordBD != null && passwordEncoder.matches(loginRequest.getPassword(), passwordBD)) {
-                        return Mono.just(nombreUsuario);
+                        return Mono.just(usuario);
                     }
                     return Mono.empty();
                 });

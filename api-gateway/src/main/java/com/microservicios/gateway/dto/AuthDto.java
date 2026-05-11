@@ -21,11 +21,13 @@ public class AuthDto {
         private String token;
         private String tipo = "Bearer";
         private String nombreUsuario;
+        private String rol;
         private String mensaje;
 
-        public LoginResponse(String token, String nombreUsuario) {
+        public LoginResponse(String token, String nombreUsuario, String rol) {
             this.token = token;
             this.nombreUsuario = nombreUsuario;
+            this.rol = rol;
             this.mensaje = "Login exitoso";
         }
     }

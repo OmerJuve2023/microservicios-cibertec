@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/auth")
@@ -19,26 +21,19 @@ public class AuthController {
     private final UsuarioClient usuarioClient;
     private final JwtUtil jwtUtil;
 
-    /**
-     * Login: valida credenciales contra MS-Usuarios y devuelve JWT
-     *
-     * POST /auth/login
-     * Body: { "nombreUsuario": "admin", "password": "123456" }
-     *
-     * Response 200: { "token": "eyJ...", "tipo": "Bearer", "nombreUsuario": "admin", "mensaje": "Login exitoso" }
-     * Response 401: credenciales incorrectas
-     * Response 503: MS-Usuarios no disponible
-     */
     @PostMapping("/login")
     public Mono<ResponseEntity<Object>> login(@RequestBody AuthDto.LoginRequest loginRequest) {
         log.info("Intento de login para usuario: {}", loginRequest.getNombreUsuario());
 
         return usuarioClient.validarCredenciales(loginRequest)
-                .map(nombreUsuario -> {
-                    String token = jwtUtil.generateToken(nombreUsuario);
-                    log.info("Login exitoso para usuario: {}", nombreUsuario);
+                .map(usuarioData -> {
+                    String nombreUsuario = (String) usuarioData.get("nombreUsuario");
+                    String rol = (String) usuarioData.getOrDefault("rol", "USUARIO");
+
+                    String token = jwtUtil.generateToken(nombreUsuario, java.util.List.of(rol));
+                    log.info("Login exitoso para usuario: {} con rol: {}", nombreUsuario, rol);
                     return ResponseEntity.ok()
-                            .<Object>body(new AuthDto.LoginResponse(token, nombreUsuario));
+                            .<Object>body(new AuthDto.LoginResponse(token, nombreUsuario, rol));
                 })
                 .defaultIfEmpty(
                     ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -50,10 +45,6 @@ public class AuthController {
                 );
     }
 
-    /**
-     * Valida si un token JWT sigue siendo válido
-     * GET /auth/validate?token=eyJ...
-     */
     @GetMapping("/validate")
     public Mono<ResponseEntity<Object>> validateToken(@RequestParam String token) {
         if (jwtUtil.isTokenValid(token)) {

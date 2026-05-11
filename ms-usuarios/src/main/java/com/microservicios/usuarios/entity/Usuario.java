@@ -31,6 +31,9 @@ public class Usuario {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "rol", length = 15)
+    private String rol;
+
     @Column(name = "fecha_reg")
     private LocalDateTime fechaReg;
 
@@ -41,6 +44,7 @@ public class Usuario {
     protected void onCreate() {
         fechaReg = LocalDateTime.now();
         fechaMod = LocalDateTime.now();
+        if (rol == null) rol = "USUARIO";
     }
 
     @PreUpdate

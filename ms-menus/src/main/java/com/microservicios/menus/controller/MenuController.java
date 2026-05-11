@@ -2,6 +2,7 @@ package com.microservicios.menus.controller;
 
 import com.microservicios.menus.entity.Menu;
 import com.microservicios.menus.service.MenuService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +45,12 @@ public class MenuController {
     }
 
     @PostMapping
-    public ResponseEntity<Menu> save(@RequestBody Menu menu) {
+    public ResponseEntity<Menu> save(@Valid @RequestBody Menu menu) {
         return ResponseEntity.status(HttpStatus.CREATED).body(menuService.save(menu));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Menu> update(@PathVariable String id, @RequestBody Menu menu) {
+    public ResponseEntity<Menu> update(@PathVariable String id, @Valid @RequestBody Menu menu) {
         return menuService.update(id, menu)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -57,8 +58,7 @@ public class MenuController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        return menuService.delete(id)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+        menuService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
